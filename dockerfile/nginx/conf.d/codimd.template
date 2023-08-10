@@ -1,0 +1,39 @@
+
+upstream app-codimd {
+  server codimd:3000;
+}
+
+# CodiMD HTTPS
+server {
+  listen 443 ssl;
+  server_name ${URL_CODIMD};
+
+  # Server Certificate
+  ssl_certificate         ${PATH_SERVERCRT};
+  ssl_certificate_key     ${PATH_SERVERKEY};
+
+  # Client Certificate
+  ssl_verify_client      on;
+  ssl_client_certificate ${PATH_CLIENTCRT};
+
+  ssl_session_timeout   10m;
+  ssl_protocols         TLSv1.2 TLSv1.3;
+  ssl_ciphers           ECDHE+RSAGCM:ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:!EXPORT:!DES:!3DES:!MD5:!DSS;
+  ignore_invalid_headers  off;
+  real_ip_header        X-Forwarded-For;
+
+  # Request Max Size
+  client_max_body_size 100M;
+
+  location / {
+    proxy_pass           http://app-codimd;
+    proxy_redirect       default;
+    proxy_http_version   1.1;
+    proxy_set_header     Upgrade $http_upgrade;
+    #proxy_set_header     Connection "upgrade";
+    proxy_set_header     Connection $connection_upgrade;
+    proxy_set_header     X-Forwarded-For $remote_addr;
+    proxy_set_header     Host $http_host;
+    add_header           Strict-Transport-Security "max-age=15552000" always;
+  }
+}

@@ -1,0 +1,163 @@
+version: "3"
+
+volumes:
+  mongo_configdb:
+  mongo_db:
+  mariadb:
+  growi:
+  minio:
+  #elasticsearch:
+
+services:
+  mongo:
+    image: mongo:6.0.8
+    restart: unless-stopped
+    volumes:
+      - ./log/mongo:/var/log/mongodb
+      - mongo_configdb:/data/configdb
+      - mongo_db:/data/db
+    # https://www.mongodb.com/download-center/community
+    # https://hub.docker.com/_/mongo?tab=tags
+
+  elasticsearch:
+    image: elasticsearch:20230810-01
+    build:
+      context: ./dockerfile/elasticsearch
+      dockerfile: Dockerfile
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: unless-stopped
+    #volumes:
+    #  - elasticsearch:/usr/share/elasticsearch/data
+    # https://www.elastic.co/jp/downloads/
+    # https://hub.docker.com/_/elasticsearch?tab=tags
+
+  redis:
+    image: redis:7.0.12-alpine
+    restart: always
+    # https://redis.io/
+    # https://hub.docker.com/_/redis?tab=tags
+
+  mariadb:
+    image: mariadb:10.11.4
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - mariadb:/var/lib/mysql
+    # https://downloads.mariadb.org/
+
+  growi:
+    image: growi:20230810-01
+    build:
+      context: ./dockerfile/growi
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+      - elasticsearch
+      - redis
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/growi
+      - ELASTICSEARCH_URI=http://elasticsearch:9200/growi
+      - REDIS_URI=http://redis:6379/growi
+      - PASSWORD_SEED=${PASSWORD_SEED}
+      - MATHJAX=1
+      - HACKMD_URI=https://${URL_CODIMD}
+      - HACKMD_URI_FOR_SERVER=http://codimd:3000
+      - APP_SITE_URL=https://${URL_GROWI}
+    entrypoint: "dockerize
+        -wait tcp://mongo:27017
+        -wait tcp://elasticsearch:9200
+        -wait tcp://redis:6379
+        -timeout 60s
+        /docker-entrypoint.sh"
+    command: ["yarn migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
+    restart: unless-stopped
+    volumes:
+      - growi:/data
+
+  codimd:
+    image: codimd:20230810-01
+    build:
+      context: ./dockerfile/codimd
+      dockerfile: Dockerfile
+    environment:
+      - GROWI_URI=https://${URL_GROWI}
+      - CMD_DB_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mariadb:3306/${MYSQL_DATABASE}
+      - CMD_CSP_ENABLE=false
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+    # https://github.com/hackmdio/codimd
+
+  postfix:
+    image: postfix:20230810-01
+    build:
+      context: ./dockerfile/postfix
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./log/postfix:/var/log/postfix
+
+  minio:
+    image: minio/minio:RELEASE.2023-07-21T21-12-44Z
+    command: ["server", "/data/files", "--console-address", ":9001"]
+    environment:
+    - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+    - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    #- MINIO_CONFIG_ENV_FILE=/data/config.env
+    volumes:
+    - minio:/data
+
+  nginx:
+    image: nginx:20230810-01
+    build:
+      context: ./dockerfile/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "443:443"
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./cert:/etc/nginx/cert
+    restart: always
+    depends_on:
+      - growi
+      - codimd
+    environment:
+      - URL_GROWI=${URL_GROWI}
+      - URL_CODIMD=${URL_CODIMD}
+      - URL_MINIO=${URL_MINIO}
+      - PATH_SERVERCRT=${PATH_SERVERCRT}
+      - PATH_SERVERKEY=${PATH_SERVERKEY}
+      - PATH_CLIENTCRT=${PATH_CLIENTCRT}
+    # http://nginx.org/en/download.html
+
+  cockpit:
+    image: cockpit:20230810-01
+    build:
+      context: ./dockerfile/cockpit
+      dockerfile: Dockerfile
+    #ports:
+    #  - "3000:3000"
+    #  - "5000:5000"
+    volumes:
+      - ./data:/usr/src/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    stdin_open: true
+    environment:
+      - REACT_APP_NAME=cockpit
+      - ASPNET_ADDRESS=*
+      - ASPNET_PORT=5000
+  # docker compose build
+  # docker compose run --rm cockpit sh -c "create-react-app cockpit --template typescript"
+
+
