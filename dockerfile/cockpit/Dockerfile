@@ -6,8 +6,9 @@ WORKDIR /usr/src/app
 RUN yarn global add create-react-app
 RUN chown -R node:node /usr/src/app
 
-# set aspnet runtime
-RUN apk --update --no-cache add aspnetcore6-runtime
+# set aspnet sdk
+#RUN apk --update --no-cache add aspnetcore6-runtime
+RUN apk --update --no-cache add dotnet6-sdk
 
 # set timezone
 RUN apk --update --no-cache add tzdata && \
