@@ -14,12 +14,13 @@ if [ -f $dllPath ]; then
     dotnet $dllPath --Address $ASPNET_ADDRESS --port $ASPNET_PORT &
 fi
 
-if [ ! -d $REACT_APP_NAME ]; then
-    create-react-app $REACT_APP_NAME --template typescript
-fi
-
 cd $REACT_APP_NAME
 yarn start
 
+# Note:
+# =================================
+# docker compose build
+# docker compose run --rm cockpit sh -c "create-react-app cockpit --template typescript"
 
 # yarn add @mui/material @emotion/react @emotion/styled
+
