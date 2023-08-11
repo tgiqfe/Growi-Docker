@@ -15,14 +15,14 @@ RUN apk --update --no-cache add tzdata && \
     cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
     apk del tzdata
 
-# set startup script
-ADD startup.sh /startup.sh
-RUN chmod a+x /startup.sh
-
 # set docker
 RUN apk --update --no-cache add docker && \
     addgroup node docker && \
     sed -i s/docker:x:101/docker:x:999/ /etc/group
+
+# set startup script
+ADD startup.sh /startup.sh
+RUN chmod a+x /startup.sh
 
 USER node
 

@@ -21,7 +21,7 @@ services:
     # https://hub.docker.com/_/mongo?tab=tags
 
   elasticsearch:
-    image: elasticsearch:20230810-01
+    image: elasticsearch:20230811-02
     container_name: growi-elasticsearch
     build:
       context: ./dockerfile/elasticsearch
@@ -61,7 +61,7 @@ services:
     # https://downloads.mariadb.org/
 
   growi:
-    image: growi:20230810-01
+    image: growi:20230811-02
     container_name: growi-growi
     build:
       context: ./dockerfile/growi
@@ -91,7 +91,7 @@ services:
       - growi:/data
 
   codimd:
-    image: codimd:20230810-01
+    image: codimd:20230811-02
     container_name: growi-codimd
     build:
       context: ./dockerfile/codimd
@@ -106,7 +106,7 @@ services:
     # https://github.com/hackmdio/codimd
 
   postfix:
-    image: postfix:20230810-01
+    image: postfix:20230811-02
     container_name: growi-postfix
     build:
       context: ./dockerfile/postfix
@@ -127,7 +127,7 @@ services:
     - minio:/data
 
   nginx:
-    image: nginx:20230810-01
+    image: nginx:20230811-02
     container_name: growi-nginx
     build:
       context: ./dockerfile/nginx
@@ -141,17 +141,20 @@ services:
     depends_on:
       - growi
       - codimd
+      - minio
+      - cockpit
     environment:
       - URL_GROWI=${URL_GROWI}
       - URL_CODIMD=${URL_CODIMD}
       - URL_MINIO=${URL_MINIO}
+      - URL_COCKPIT=${URL_COCKPIT}
       - PATH_SERVERCRT=${PATH_SERVERCRT}
       - PATH_SERVERKEY=${PATH_SERVERKEY}
       - PATH_CLIENTCRT=${PATH_CLIENTCRT}
     # http://nginx.org/en/download.html
 
   cockpit:
-    image: cockpit:20230810-01
+    image: cockpit:20230811-02
     container_name: growi-cockpit
     build:
       context: ./dockerfile/cockpit

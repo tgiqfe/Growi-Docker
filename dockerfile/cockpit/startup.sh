@@ -15,6 +15,9 @@ if [ -f $dllPath ]; then
 fi
 
 cd $REACT_APP_NAME
+if [ ! -d node_modules ]; then
+    yarn install
+fi
 yarn start
 
 # Note:

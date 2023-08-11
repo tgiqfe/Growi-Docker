@@ -21,6 +21,10 @@
 <tr>
 <td>環境：</td><td>Windows server 2022</td>
 </tr>
+</tr>
+<tr>
+<td>備考：</td><td>最初の投稿から、かなり時間が経っています</td>
+</tr>
 </table>
 
 </div></div></div>

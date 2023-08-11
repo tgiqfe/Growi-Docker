@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# 設定ファイルの中の環境変数を解決
+# Resolve environment variables in configuration files.
 envsubst \
     '$PATH_SERVERCRT $PATH_SERVERKEY $PATH_CLIENTCRT $URL_GROWI' < \
     /etc/nginx/conf.d/growi.template > \
@@ -13,10 +13,15 @@ envsubst \
     '$PATH_SERVERCRT $PATH_SERVERKEY $PATH_CLIENTCRT $URL_MINIO' < \
     /etc/nginx/conf.d/minio.template > \
     /etc/nginx/conf.d/minio.conf
+envsubst \
+    '$PATH_SERVERCRT $PATH_SERVERKEY $PATH_CLIENTCRT $URL_COCKPIT' < \
+    /etc/nginx/conf.d/cockpit.template > \
+    /etc/nginx/conf.d/cockpit.conf
 
-# 設定ファイルテンプレートを削除
+# Delete template config file.
 rm -f /etc/nginx/conf.d/growi.template
 rm -f /etc/nginx/conf.d/codimd.template
 rm -f /etc/nginx/conf.d/minio.template
+rm -f /etc/nginx/conf.d/cockpit.template
 
 nginx -g "daemon off;"
