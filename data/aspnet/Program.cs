@@ -1,6 +1,9 @@
 using CockpitApp;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
+
+Environment.CurrentDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
 var builder = WebApplication.CreateBuilder(args);
 
