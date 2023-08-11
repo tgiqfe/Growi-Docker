@@ -34,10 +34,14 @@ app.MapGet("/api/script/{name}", async (context) =>
 
     string scriptName = context.Request.RouteValues["name"] as string;
 
+    if(!Directory.Exists(ap.LogDir)){
+        Directory.CreateDirectory(ap.LogDir);
+    }
     using (var sw = new StreamWriter(ap.LogPath, true, Encoding.UTF8))
     {
         sw.WriteLine(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " " + scriptName);
     }
+    if(Directory.Exists(ap.ScriptDir)){
     using (var proc = new Process())
     {
         proc.StartInfo.FileName = Path.Combine(ap.ScriptDir, scriptName);
@@ -45,6 +49,8 @@ app.MapGet("/api/script/{name}", async (context) =>
         proc.StartInfo.UseShellExecute = false;
         proc.Start();
     }
+    }
+
 
     res.Message = scriptName;
     await context.Response.WriteAsJsonAsync(res);

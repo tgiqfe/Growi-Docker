@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Box, Typography } from "@mui/material";
-import ContainerButton from "./ControlButton";
+import ControlButton from "./ControlButton";
 
 export default () => {
   return (
@@ -16,7 +16,7 @@ export default () => {
         <Typography component="h1" variant="h4">
           COCKPIT
         </Typography>
-        <ContainerButton
+        <ControlButton
           name="test"
           text="sample"
           apiUrl="/api/script/test01.sh"

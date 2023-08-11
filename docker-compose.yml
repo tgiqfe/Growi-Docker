@@ -159,9 +159,9 @@ services:
     build:
       context: ./dockerfile/cockpit
       dockerfile: Dockerfile
-    #ports:
-    #  - "3000:3000"
-    #  - "5000:5000"
+    ports:
+      - "3000:3000"
+      - "5000:5000"
     volumes:
       - ./data:/usr/src/app
       - /var/run/docker.sock:/var/run/docker.sock
