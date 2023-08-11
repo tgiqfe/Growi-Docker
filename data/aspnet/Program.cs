@@ -1,4 +1,6 @@
 using CockpitApp;
+using System.Diagnostics;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +25,26 @@ app.MapGet("/", () => "");
 app.MapPost("/", () => "");
 
 //  API Run Server side script.
-app.MapGet("/api/script{name}", async (context) =>
+app.MapGet("/api/script/{name}", async (context) =>
 {
-    string scriptName = context.Request.RouteValues["name"] as string;
-    
-});
+    var res = new ResponseItem();
 
+    string scriptName = context.Request.RouteValues["name"] as string;
+
+    using (var sw = new StreamWriter(ap.LogPath, true, Encoding.UTF8))
+    {
+        sw.WriteLine(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " " + scriptName);
+    }
+    using (var proc = new Process())
+    {
+        proc.StartInfo.FileName = Path.Combine(ap.ScriptDir, scriptName);
+        proc.StartInfo.CreateNoWindow = true;
+        proc.StartInfo.UseShellExecute = false;
+        proc.Start();
+    }
+
+    res.Message = scriptName;
+    await context.Response.WriteAsJsonAsync(res);
+}).RequireCors(_allowSpecificOrigins);
 
 app.Run();

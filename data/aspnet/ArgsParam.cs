@@ -2,8 +2,25 @@ namespace CockpitApp
 {
     internal class ArgsParam
     {
-        public string Address { get; set; } = "*";
-        public int Port { get; set; } = 5000;
+        #region publci parameters
+
+        public string Address { get; private set; } = "*";
+
+        public int Port { get; private set; } = 5000;
+
+        public string LogDir { get; private set; } = "logs";
+
+        public string LogPath
+        {
+            get
+            {
+                return Path.Combine(this.LogDir, "cockpitapp_" + DateTime.Now.ToString("yyyyMMdd") + ".log");
+            }
+        }
+
+        public string ScriptDir { get; private set; } = "scripts";
+
+        #endregion
 
         public ArgsParam(string[] args)
         {
@@ -25,6 +42,18 @@ namespace CockpitApp
                         {
                             this.Port = num;
                         }
+                        break;
+                    case "/l":
+                    case "-l":
+                    case "/logs":
+                    case "--logs":
+                        this.LogDir = args[++i];
+                        break;
+                    case "/s":
+                    case "-s":
+                    case "/scriptdir":
+                    case "--scriptdir":
+                        this.ScriptDir = args[++i];
                         break;
                 }
             }
