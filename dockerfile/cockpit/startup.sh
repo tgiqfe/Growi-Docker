@@ -1,19 +1,13 @@
 #!/bin/sh
 
 # start ASP.NET server
-dllPath=/usr/src/app/aspnet/CockpitApp.dll
-aspnetAddress=*
-aspnetPort=5000
-if [ -f $dllPath ]; then
-    if [ -n $ASPNET_ADDRESS ]; then
-        aspnetAddress=$ASPNET_ADDRESS
-    fi
-    if [ -n $ASPNET_PORT ]; then
-        aspnetPort=$ASPNET_PORT
-    fi
-    dotnet $dllPath --Address $ASPNET_ADDRESS --port $ASPNET_PORT &
+if [ -d $ASPNET_APP_NAME ]; then
+    cd $ASPNET_APP_NAME
+    dotnet run &
+    cd ..
 fi
 
+# start react app
 cd $REACT_APP_NAME
 if [ ! -d node_modules ]; then
     yarn install

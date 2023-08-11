@@ -168,8 +168,7 @@ services:
     stdin_open: true
     environment:
       - REACT_APP_NAME=cockpit
-      - ASPNET_ADDRESS=*
-      - ASPNET_PORT=5000
+      - ASPNET_APP_NAME=aspnet
   # docker compose build
   # docker compose run --rm cockpit sh -c "create-react-app cockpit --template typescript"
 
