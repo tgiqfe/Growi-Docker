@@ -43,8 +43,8 @@ app.MapGet("/api/script/{name}", async (context) =>
 //  API Export MongoDB
 app.MapGet("/api/mongodb/export", async (context) =>
 {
-
-    var res = new ResponseItem();
+    var mongodbExport = new MongodbExport();
+    var res = mongodbExport.GetResult();
 
     await context.Response.WriteAsJsonAsync(res);
 }).RequireCors(_allowSpecificOrigins);
