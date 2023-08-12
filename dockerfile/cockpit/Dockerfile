@@ -24,11 +24,6 @@ RUN apk --update --no-cache add docker && \
 RUN apk --update --no-cache add mongodb-tools
 RUN wget -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod a+x /usr/local/bin/mc
-RUN mc alias remove gcs && \
-    mc alias remove play && \
-    mc alias remove s3 && \
-    mc alias remove local && \
-    mc alias list
 
 # set startup script
 ADD startup.sh /startup.sh

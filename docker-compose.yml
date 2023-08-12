@@ -17,6 +17,8 @@ services:
       - ./log/mongo:/var/log/mongodb
       - mongo_configdb:/data/configdb
       - mongo_db:/data/db
+    #ports:
+    #  - "27017:27017"
     # https://www.mongodb.com/download-center/community
     # https://hub.docker.com/_/mongo?tab=tags
 

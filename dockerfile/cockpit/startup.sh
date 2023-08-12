@@ -3,7 +3,8 @@
 # start ASP.NET server
 if [ -d $ASPNET_APP_NAME ]; then
     cd $ASPNET_APP_NAME
-    dotnet run &
+    dotnet build --configuration Release
+    dotnet run --configuration Release -- -a * -p 4000 -s "/usr/src/app/scripts" &
     cd ..
 fi
 
