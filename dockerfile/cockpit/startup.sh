@@ -9,9 +9,7 @@ fi
 
 # start react app
 cd $REACT_APP_NAME
-if [ ! -d node_modules ]; then
-    yarn install
-fi
+yarn install
 yarn start
 
 # Note:
