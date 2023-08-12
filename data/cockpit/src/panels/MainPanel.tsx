@@ -1,13 +1,16 @@
 import React from "react";
-import { Container, Box, Typography } from "@mui/material";
+import { Container, Box, Typography, Paper } from "@mui/material";
 import ControlButton from "./ControlButton";
 
 export default () => {
   return (
     <Container maxWidth="sm">
-      <Box
+      <Paper
+        elevation={3}
         sx={{
-          marginTop: 8,
+          mt: 8,
+          px: 2,
+          py: 4,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -33,7 +36,7 @@ export default () => {
             apiUrl="/api/script/restore_mongodb.sh"
           />
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 };
