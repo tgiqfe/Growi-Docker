@@ -9,6 +9,7 @@ namespace CockpitApp.Api
         const int CODE_SUCCESS = 0;
         const int CODE_SCRIPT_IS_EMPTY = 1;
         const int CODE_SCRIPT_NOT_EXISTS = 2;
+        const int CODE_SCRIPT_RUN_FAILED = 3;
 
         #endregion
 
@@ -45,6 +46,7 @@ namespace CockpitApp.Api
 
             await Task.Run(() =>
             {
+                try{
                 using (var proc = new Process())
                 {
                     proc.StartInfo.FileName = ScriptPath;
@@ -53,6 +55,10 @@ namespace CockpitApp.Api
                     proc.Start();
                     proc.WaitForExit();
                     _gp.LogWrite("Script run exit.");
+                }
+                }catch{
+                    _gp.LogWrite("Script run failed.");
+                    this.Code = CODE_SCRIPT_RUN_FAILED;
                 }
             });
         }

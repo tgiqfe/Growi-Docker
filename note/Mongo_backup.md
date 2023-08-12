@@ -30,11 +30,14 @@ Growi用MongoDBのバックアップ
 ```bash
 # minio-clientへのエイリアスセット。ついでにバケット有無もチェック
 minioServer=minio
-mc admin info $MINIO_ALIAS_NAME
-if [ $? -ne 0 ]; then
+until (mc admin info $MINIO_ALIAS_NAME)
+do
+    echo "...waitint..."
+    sleep 1
     mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
-fi
+done
 mc ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
+sleep 1
 if [ $? -ne 0 ]; then
     mc mb ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
 fi
@@ -75,10 +78,12 @@ Growi用MongoDBのリストア
 ```bash
 # minio-clientへのエイリアスセット
 minioServer=minio
-mc admin info $MINIO_ALIAS_NAME
-if [ $? -ne 0 ]; then
-    mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_BACKUP_ACCESSKEY $MINIO_BACKUP_SECRETKEY
-fi
+until (mc admin info $MINIO_ALIAS_NAME)
+do
+    echo "...waitint..."
+    sleep 1
+    mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+done
 
 # バックアップデータをダウンロード
 # (mc lsコマンドで出力した結果から、最後の1つのファイルを取得)
@@ -86,7 +91,7 @@ bkFileName=$(mc --json ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP} | jq -r ".k
 backupFile=/tmp/$bkFileName
 mc cp ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}/${bkFileName} $backupFile
 
-# 解答/展開
+# 解凍/展開
 tempDir=/tmp/tempDumpDir
 mkdir -p $tempDir
 tar xzvf $backupFile -C $tempDir --strip-components 2
@@ -101,5 +106,5 @@ rm -rf $tempDir
 
 # Growiコンテナを再起動
 growiServer=growi-growi
-docker compose restart growi-growi
+docker container restart growi-growi
 ```

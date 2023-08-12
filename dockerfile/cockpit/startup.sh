@@ -4,7 +4,7 @@
 if [ -d $ASPNET_APP_NAME ]; then
     cd $ASPNET_APP_NAME
     dotnet build --configuration Release
-    dotnet run --configuration Release -- -a * -p 4000 -s "/usr/src/app/scripts" &
+    dotnet run --configuration Release -- -a * -p 5000 -s "/usr/src/app/scripts" &
     cd ..
 fi
 

@@ -32,11 +32,6 @@ export default () => {
             text="MongoDB Restore. (latest version.)"
             apiUrl="/api/script/restore_mongodb.sh"
           />
-          <ControlButton
-            name="Restart"
-            text="Growi Container restart."
-            apiUrl="/api/script/restart_growi.sh"
-          />
         </Box>
       </Box>
     </Container>
