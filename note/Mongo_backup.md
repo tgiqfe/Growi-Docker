@@ -5,9 +5,13 @@
 | 設定名 | パラメータ | 値 | 備考 |
 | ------ | ---------- | -- | ---- |
 | MongoDBサーバ | dbServer | mongo | 同docker-compose内のアクセス |
-| Minioサーバ | minioServer | minio | 同docker-compose内のアクセス |
+| Minioサーバ | minioServer | minio | 同上 |
+| Growiコンテナ | growiServer | growi-growi | docker-compose.ymlで指定したコンテナ名 |
 | 対象データベース | dbName | growi | docker-compose.ymlのgrowiコンテナの``mongodb://mongo:27017/growi``で指定している |
-| Minioのエイリアス名 | MINIO_ALIAS_NAME | (任意) | .envファイルに記述して、docker-compose.ymlの``environment``パラメータ経由でセット |
+| Minio管理者ユーザー | MINIO_ROOT_USER | (任意) | .envファイルに記述して、docker-compose.ymlの``environment``パラメータ経由でセット |
+| Minio管理者パスワード | MINIO_ROOT_PASSWORD | (任意) | 同上 |
+| Minioエイリアス名 | MINIO_ALIAS_NAME | (任意) | 同上 |
+| Minioバケット名 | MINIO_BUCKET_BACKUP | (任意) | 同上 |
 
 ## バックアップ
 
@@ -24,22 +28,33 @@ Growi用MongoDBのバックアップ
 ### スクリプト
 
 ```bash
-# minio-clientへのエイリアスセット
+# minio-clientへのエイリアスセット。ついでにバケット有無もチェック
 minioServer=minio
 mc admin info $MINIO_ALIAS_NAME
 if [ $? -ne 0 ]; then
     mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+fi
+mc ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
+if [ $? -ne 0 ]; then
+    mc mb ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
 fi
 
 # バックアップ開始
 dbServer=mongo
 dbName=growi
 tempDir=/tmp/tempDumpDir
-backupFile=mongodb_$(date +%Y%m%d_%H%M%S).tar.gz
+backupFile=/tmp/mongodb_$(date +%Y%m%d_%H%M%S).tar.gz
 mongodump -h $dbServer -o $tempDir -d $dbName
 
-tar czvf /tmp/$backupFile $tempDir
+# パック/圧縮
+tar czvf $backupFile $tempDir
+
+# Minioへアップロード
+mc cp $backupFile ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
+
+# 一時データを削除
 rm -rf $tempDir
+rm -rf $backupFile
 ```
 
 ## リストア
@@ -53,6 +68,7 @@ Growi用MongoDBのリストア
 3. ``tar``コマンドで解凍/展開
 4. ``mongorestore``でリストア
 5. 一時データを削除
+6. Growiコンテナを再起動
 
 ### スクリプト
 
@@ -61,17 +77,29 @@ Growi用MongoDBのリストア
 minioServer=minio
 mc admin info $MINIO_ALIAS_NAME
 if [ $? -ne 0 ]; then
-    mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+    mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_BACKUP_ACCESSKEY $MINIO_BACKUP_SECRETKEY
 fi
+
+# バックアップデータをダウンロード
+# (mc lsコマンドで出力した結果から、最後の1つのファイルを取得)
+bkFileName=$(mc --json ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP} | jq -r ".key" | tail -n 1)
+backupFile=/tmp/$bkFileName
+mc cp ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}/${bkFileName} $backupFile
+
+# 解答/展開
+tempDir=/tmp/tempDumpDir
+mkdir -p $tempDir
+tar xzvf $backupFile -C $tempDir --strip-components 2
 
 # リストア開始
 dbServer=mongo
-#dbName=growi
-tempDir=/tmp/tempDumpDir
-backupFile=mongodb_$(date +%Y%m%d_%H%M%S).tar.gz
-tar xzvf $backupFile -C $tempDir --strip-components 2
 mongorestore -h $dbServer --drop $tempDir
 
+# 一時データを削除
 rm -rf $backupFile
 rm -rf $tempDir
+
+# Growiコンテナを再起動
+growiServer=growi-growi
+docker compose restart growi-growi
 ```

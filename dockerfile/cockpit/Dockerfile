@@ -15,13 +15,11 @@ RUN apk --update --no-cache add tzdata && \
     cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
     apk del tzdata
 
-# set docker
+# set backup/restore tools
 RUN apk --update --no-cache add docker && \
     addgroup node docker && \
     sed -i s/docker:x:101/docker:x:999/ /etc/group
-
-# set backup/restore tools
-RUN apk --update --no-cache add mongodb-tools
+RUN apk --update --no-cache add mongodb-tools jq
 RUN wget -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod a+x /usr/local/bin/mc
 
