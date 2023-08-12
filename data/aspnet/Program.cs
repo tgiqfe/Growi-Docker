@@ -1,7 +1,6 @@
 using CockpitApp;
+using CockpitApp.Api;
 using System.Diagnostics;
-using System.Reflection;
-using System.Text;
 
 Environment.CurrentDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
@@ -18,10 +17,11 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-var ap = new ArgsParam(args);
+//  Set global parameter
+var gp = new GlobalParam(args);
 
 app.UseCors(_allowSpecificOrigins);
-app.Urls.Add($"http://{ap.Address}:{ap.Port}");
+app.Urls.Add($"http://{gp.Address}:{gp.Port}");
 
 //  Empty Get,Post
 app.MapGet("/", () => "");
@@ -30,29 +30,13 @@ app.MapPost("/", () => "");
 //  API Run Server side script.
 app.MapGet("/api/script/{name}", async (context) =>
 {
-    var res = new ResponseItem();
+    var scriptRun = new ScriptRun(
+        gp, 
+        context.Request.RouteValues["name"] as string);
+    scriptRun.Start();
+    var res = scriptRun.GetResult();
+    res.Message = "Script run.";
 
-    string scriptName = context.Request.RouteValues["name"] as string;
-
-    if(!Directory.Exists(ap.LogDir)){
-        Directory.CreateDirectory(ap.LogDir);
-    }
-    using (var sw = new StreamWriter(ap.LogPath, true, Encoding.UTF8))
-    {
-        sw.WriteLine(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " " + scriptName);
-    }
-    if(Directory.Exists(ap.ScriptDir)){
-    using (var proc = new Process())
-    {
-        proc.StartInfo.FileName = Path.Combine(ap.ScriptDir, scriptName);
-        proc.StartInfo.CreateNoWindow = true;
-        proc.StartInfo.UseShellExecute = false;
-        proc.Start();
-    }
-    }
-
-
-    res.Message = scriptName;
     await context.Response.WriteAsJsonAsync(res);
 }).RequireCors(_allowSpecificOrigins);
 
