@@ -19,7 +19,7 @@ RUN apk --update --no-cache add tzdata && \
 RUN apk --update --no-cache add docker && \
     addgroup node docker && \
     sed -i s/docker:x:101/docker:x:999/ /etc/group
-RUN apk --update --no-cache add mongodb-tools jq
+RUN apk --update --no-cache add mongodb-tools jq curl
 RUN wget -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod a+x /usr/local/bin/mc
 
