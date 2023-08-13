@@ -17,8 +17,8 @@ services:
       - ./log/mongo:/var/log/mongodb
       - mongo_configdb:/data/configdb
       - mongo_db:/data/db
-    ports:
-      - "27017:27017"
+    #ports:
+    #  - "27017:27017"
     # https://www.mongodb.com/download-center/community
     # https://hub.docker.com/_/mongo?tab=tags
 
@@ -161,9 +161,9 @@ services:
     build:
       context: ./dockerfile/cockpit
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-      - "5000:5000"
+    #ports:
+    #  - "3000:3000"
+    #  - "5000:5000"
     volumes:
       - ./data:/usr/src/app
       - /var/run/docker.sock:/var/run/docker.sock

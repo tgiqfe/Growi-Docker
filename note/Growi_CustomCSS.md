@@ -29,5 +29,6 @@
 .articleInfo td:nth-child(2n+1) {
     width: 6rem;
     background-color: #C5E1FE;
+    font-weight: bold;
 }
 ```
