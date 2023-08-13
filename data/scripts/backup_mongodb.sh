@@ -8,11 +8,12 @@ do
     sleep 1
     mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
 done
-mc ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
-sleep 1
-if [ $? -ne 0 ]; then
+until (mc ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP})
+do
+    echo "...waitint..."
+    sleep 1
     mc mb ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
-fi
+done
 
 # Backup start
 dbServer=mongo
