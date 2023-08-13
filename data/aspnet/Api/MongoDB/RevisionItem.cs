@@ -33,7 +33,7 @@ namespace CockpitApp.Api.MongoDB
             }
         }
 
-        public string GetPagePath()
+        public string GetOutputFileName()
         {
             return this.PagePath?.TrimStart('/').
                 Replace("/", "_").
@@ -41,9 +41,18 @@ namespace CockpitApp.Api.MongoDB
                 Replace("\"", "”") ?? "";
         }
 
+        /// <summary>
+        /// Output file
+        ///   row 1: page path
+        ///   row 2: empty
+        ///   row 3~: body
+        /// </summary>
+        /// <param name="TargetDir"></param>
         public void Output(string TargetDir)
         {
-            File.WriteAllText(Path.Combine(TargetDir, GetPagePath() + ".md"), this.Body);
+            File.WriteAllText(
+                Path.Combine(TargetDir, GetOutputFileName() + ".md"),
+                this.PagePath + "\n\n" + this.Body);
         }
 
         /// <summary>
@@ -55,7 +64,7 @@ namespace CockpitApp.Api.MongoDB
             string text = this.Body.Length < 15 ? this.Body : this.Body[0..15];
             text = text.Replace("\n", "\\n");
 
-            return $"{Id} {GetPagePath()} {CreatedAt} {text}";
+            return $"{Id} {GetOutputFileName()} {CreatedAt} {text}";
         }
     }
 }
