@@ -4,9 +4,12 @@
 から行う、[カスタムCSS]の設定メモ
 
 ```css
-/* リスト部分行間を狭く */
+/* リスト部分行間を狭く (lsxのページリストの行間は少し広く) */
 .wiki ol li, .wiki ul li {
     line-height: 1rem !important;
+}
+.lsx ul li {
+    line-height: 1.8em !important;
 }
 
 /* テーブルの行間と幅を変更 */
@@ -20,15 +23,24 @@
 
 /* ドキュメントメタ情報用 */
 .articleInfo {
-    border: none !important;
     margin: 0.8rem 0 0 0.8rem;
+}
+.articleInfo table {
+    width: 97%;
+    min-width:30rem;
+    border: none;
+}
+.articleInfo th {
+    display: none;
 }
 .articleInfo td {
     border: none !important;
 }
 .articleInfo td:nth-child(2n+1) {
-    width: 6rem;
+    width: 5rem;
     background-color: #C5E1FE;
     font-weight: bold;
 }
 ```
+
+
