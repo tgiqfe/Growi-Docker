@@ -8,13 +8,22 @@ namespace CockpitApp.Api
     {
         public int Code { get; private set; }
 
-        private MongoClient _client = null;
-        private IMongoDatabase _db = null; 
+        public string DBServer { get; private set; }
+        public int DBPort { get; private set; }
+        public string DBName { get; private set; }
 
-        public MongoDBExport(string server, int port, string name)
+        private MongoClient _client = null;
+        private IMongoDatabase _db = null;
+        private GlobalParam _gp = null;
+
+        public MongoDBExport(GlobalParam gp, string server, int port, string name)
         {
+            _gp = gp;
             _client = new MongoClient($"mongodb://{server}:{port}");
             _db = _client.GetDatabase(name);
+            this.DBServer = server;
+            this.DBPort = port;
+            this.DBName = name;
         }
 
         public void Start()
@@ -64,6 +73,12 @@ namespace CockpitApp.Api
             return new ResponseItem
             {
                 Code = Code,
+                Properties = new()
+                {
+                    { "DBServer", this.DBServer },
+                    { "DBPort", this.DBPort.ToString() },
+                    { "DBName", this.DBName },
+                },
             };
         }
     }

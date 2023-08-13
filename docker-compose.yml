@@ -17,13 +17,13 @@ services:
       - ./log/mongo:/var/log/mongodb
       - mongo_configdb:/data/configdb
       - mongo_db:/data/db
-    #ports:
-    #  - "27017:27017"
+    ports:
+      - "27017:27017"
     # https://www.mongodb.com/download-center/community
     # https://hub.docker.com/_/mongo?tab=tags
 
   elasticsearch:
-    image: elasticsearch:20230812-03
+    image: elasticsearch:20230813-04
     container_name: growi-elasticsearch
     build:
       context: ./dockerfile/elasticsearch
@@ -63,7 +63,7 @@ services:
     # https://downloads.mariadb.org/
 
   growi:
-    image: growi:20230812-03
+    image: growi:20230813-04
     container_name: growi-growi
     build:
       context: ./dockerfile/growi
@@ -93,7 +93,7 @@ services:
       - growi:/data
 
   codimd:
-    image: codimd:20230812-03
+    image: codimd:20230813-04
     container_name: growi-codimd
     build:
       context: ./dockerfile/codimd
@@ -108,7 +108,7 @@ services:
     # https://github.com/hackmdio/codimd
 
   postfix:
-    image: postfix:20230812-03
+    image: postfix:20230813-04
     container_name: growi-postfix
     build:
       context: ./dockerfile/postfix
@@ -129,7 +129,7 @@ services:
     - minio:/data
 
   nginx:
-    image: nginx:20230812-03
+    image: nginx:20230813-04
     container_name: growi-nginx
     build:
       context: ./dockerfile/nginx
@@ -156,14 +156,14 @@ services:
     # http://nginx.org/en/download.html
 
   cockpit:
-    image: cockpit:20230812-03
+    image: cockpit:20230813-04
     container_name: growi-cockpit
     build:
       context: ./dockerfile/cockpit
       dockerfile: Dockerfile
-    #ports:
-    #  - "3000:3000"
-    #  - "5000:5000"
+    ports:
+      - "3000:3000"
+      - "5000:5000"
     volumes:
       - ./data:/usr/src/app
       - /var/run/docker.sock:/var/run/docker.sock

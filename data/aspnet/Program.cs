@@ -47,10 +47,10 @@ app.MapGet("/api/mongodb/export", async (context) =>
     int dbPort = int.TryParse(context.Request.Query["port"].ToString(), out int num) ? num : 27017;
     string dbName = context.Request.Query["name"].ToString();
 
-    var mongodbExport = new MongoDBExport(dbServer, dbPort, dbName);
-
+    var mongodbExport = new MongoDBExport(gp, dbServer, dbPort, dbName);
+    mongodbExport.Start();
     var res = mongodbExport.GetResult();
-
+    
     await context.Response.WriteAsJsonAsync(res);
 }).RequireCors(_allowSpecificOrigins);
 

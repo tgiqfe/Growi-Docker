@@ -35,6 +35,11 @@ export default () => {
             text="MongoDB Restore. (latest version.)"
             apiUrl="/api/script/restore_mongodb.sh"
           />
+          <ControlButton
+            name="Export"
+            text="Export revision from Growi."
+            apiUrl="/api/mongodb/export?server=mongo&port=27017&name=growi"
+          />
         </Box>
       </Paper>
     </Container>
