@@ -3,10 +3,8 @@ version: "3"
 volumes:
   mongo_configdb:
   mongo_db:
-  mariadb:
   growi:
   minio:
-  #elasticsearch:
 
 services:
   mongo:
@@ -23,7 +21,7 @@ services:
     # https://hub.docker.com/_/mongo?tab=tags
 
   elasticsearch:
-    image: elasticsearch:20230813-04
+    image: elasticsearch:20230814-05
     container_name: growi-elasticsearch
     build:
       context: ./dockerfile/elasticsearch
@@ -36,8 +34,6 @@ services:
         soft: -1
         hard: -1
     restart: unless-stopped
-    #volumes:
-    #  - elasticsearch:/usr/share/elasticsearch/data
     # https://www.elastic.co/jp/downloads/
     # https://hub.docker.com/_/elasticsearch?tab=tags
 
@@ -58,12 +54,10 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     restart: unless-stopped
-    volumes:
-      - mariadb:/var/lib/mysql
     # https://downloads.mariadb.org/
 
   growi:
-    image: growi:20230813-04
+    image: growi:20230814-05
     container_name: growi-growi
     build:
       context: ./dockerfile/growi
@@ -93,7 +87,7 @@ services:
       - growi:/data
 
   codimd:
-    image: codimd:20230813-04
+    image: codimd:20230814-05
     container_name: growi-codimd
     build:
       context: ./dockerfile/codimd
@@ -108,7 +102,7 @@ services:
     # https://github.com/hackmdio/codimd
 
   postfix:
-    image: postfix:20230813-04
+    image: postfix:20230814-05
     container_name: growi-postfix
     build:
       context: ./dockerfile/postfix
@@ -124,12 +118,11 @@ services:
     environment:
     - MINIO_ROOT_USER=${MINIO_ROOT_USER}
     - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-    #- MINIO_CONFIG_ENV_FILE=/data/config.env
     volumes:
     - minio:/data
 
   nginx:
-    image: nginx:20230813-04
+    image: nginx:20230814-05
     container_name: growi-nginx
     build:
       context: ./dockerfile/nginx
@@ -156,7 +149,7 @@ services:
     # http://nginx.org/en/download.html
 
   cockpit:
-    image: cockpit:20230813-04
+    image: cockpit:20230814-05
     container_name: growi-cockpit
     build:
       context: ./dockerfile/cockpit
