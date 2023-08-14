@@ -4,7 +4,7 @@
 minioServer=minio
 until (mc admin info $MINIO_ALIAS_NAME)
 do
-    echo "...waitint..."
+    echo "...wait..."
     sleep 1
     mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
 done

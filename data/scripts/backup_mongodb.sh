@@ -4,13 +4,13 @@
 minioServer=minio
 until (mc admin info $MINIO_ALIAS_NAME)
 do
-    echo "...waitint..."
+    echo "...wait..."
     sleep 1
     mc alias set $MINIO_ALIAS_NAME http://${minioServer}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
 done
 until (mc ls ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP})
 do
-    echo "...waitint..."
+    echo "...wait..."
     sleep 1
     mc mb ${MINIO_ALIAS_NAME}/${MINIO_BUCKET_BACKUP}
 done
