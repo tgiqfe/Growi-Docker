@@ -26,6 +26,16 @@ body="# ${topTierName}
 
 </div></div>
 
+<br>
+
+<div class=\\\"mx-4\\\">
+    <div class=\\\"bg-info px-3 text-white\\\">Template</div>
+    <div class=\\\"border py-2 px-4\\\">
+
+\$lsx(filter=_?template)
+
+</div></div>
+
 "
 body=${body//$'\n'/\\n}
 curl -X POST \

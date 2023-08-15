@@ -50,4 +50,13 @@
 $lsx(/,except=_?template|Sandbox|user,num=15,depth=2)
 
 </div>
+
+## 設定
+
+<a href="/admin" class="btn btn-outline-primary mx-4"><i class="bi bi-gear-fill mr-2"></i>Growi管理者用設定</a>
+
+<a href="/me" class="btn btn-outline-primary mx-4"><i class="bi bi-file-earmark-person-fill mr-2"></i>ユーザー設定</a>
+
+<a href="https://cockpit.example.local.net" class="btn btn-outline-primary mx-4"><i class="bi bi-stack mr-2"></i>Cockpitページ</a>
+
 ```
