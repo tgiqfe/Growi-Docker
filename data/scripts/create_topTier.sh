@@ -5,7 +5,12 @@ api_token2=[[[[Growi AccessToken URL Encode]]]]
 
 url=http://growi:3000/_api/v3/pages
 
-topTierName=Mac
+# ===========================================
+# Function
+# ===========================================
+
+function CreateTopTier(){
+topTierName=$1
 
 # ===========================================
 # Top tier page
@@ -79,4 +84,22 @@ curl -X POST \
     \"grant\": 1
     }" $url
 
+sleep 1
+}
+
+# ===========================================
+# Main
+# ===========================================
+
+CreateTopTier Windows
+CreateTopTier Linux
+CreateTopTier Mac
+CreateTopTier Web
+CreateTopTier Application
+CreateTopTier Programing
+CreateTopTier Virtualization
+CreateTopTier Network
+CreateTopTier Storage
+CreateTopTier Database
+CreateTopTier Cloud
 
