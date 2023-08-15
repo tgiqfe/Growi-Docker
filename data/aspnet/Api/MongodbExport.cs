@@ -35,9 +35,8 @@ namespace CockpitApp.Api
             revisionList.ForEach(x =>
             {
                 x.SetPagePath(pageList);
-                if (x.PagePath == "/" ||
-                    x.PagePath.StartsWith("/user/") ||
-                    x.PagePath.StartsWith("Contents") ||
+                if (x.PagePath.StartsWith("/user/") ||
+                    x.PagePath.StartsWith("/Contents") ||
                     x.PagePath.StartsWith("/Sandbox"))
                 {
                     //  Exclude page path

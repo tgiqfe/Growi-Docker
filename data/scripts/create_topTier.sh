@@ -18,7 +18,13 @@ topTierName=$1
 path=/${topTierName}
 body="# ${topTierName}
 
-\$lsx(depth=1)
+<div class=\\\"mx-4\\\">
+    <div class=\\\"bg-info px-3 text-white\\\">List</div>
+    <div class=\\\"border py-2 px-4\\\">
+
+\$lsx(depth=1,except=_?template)
+
+</div></div>
 
 "
 body=${body//$'\n'/\\n}
@@ -36,7 +42,13 @@ curl -X POST \
 
 path=/${topTierName}/_template
 body="
+<div class=\\\"mx-4\\\">
+    <div class=\\\"bg-warning px-3\\\">List</div>
+    <div class=\\\"border py-2 px-4\\\">
+
 \$lsx(depth=1)
+
+</div></div>
 
 "
 body=${body//$'\n'/\\n}
@@ -62,8 +74,8 @@ body="
 
 |         |                          |
 | ------- | ------------------------ |
-| 投稿日  | 2023/08/11               |
-| 更新日  | 2023/08/13               |
+| 投稿日  | 2023/08/15               |
+| 更新日  | 2023/08/15               |
 | 参考URL | https://www.google.co.jp |
 | 環境    | Ubuntu Server 2023       |
 | 備考    | ...                      |

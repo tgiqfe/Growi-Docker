@@ -21,6 +21,16 @@
     min-width: 32rem;
 }
 
+/* コドハイライトの上下空白を狭く */
+.wiki p {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+.code-highlighted {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
 /* ドキュメントメタ情報用 */
 .articleInfo {
     margin: 0.8rem 0 0 0.8rem;

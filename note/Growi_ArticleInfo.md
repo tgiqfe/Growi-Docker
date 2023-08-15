@@ -51,3 +51,14 @@
 
 </div></div></div>
 ```
+
+## Tips
+
+ちょっとしたメモ、Tipsを飾るためのアクセント
+```html
+<div class="border-success p-2" style="border: 1px solid #eee; border-left-width: 10px; border-radius: 5px;">
+ここにメッセージ
+</div>
+```
+
+
