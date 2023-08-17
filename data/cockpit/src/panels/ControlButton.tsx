@@ -2,9 +2,11 @@ import React from "react";
 import { Box, TextField, Button, Stack, Typography } from "@mui/material";
 
 type Props = {
+  method: string;
   name: string;
   text: string;
   apiUrl: string;
+  body: string;
 };
 
 export default (props: Props) => {
@@ -14,9 +16,21 @@ export default (props: Props) => {
         <Button
           variant="contained"
           onClick={() => {
-            fetch(props.apiUrl)
-              .then((res) => res.json())
-              .then((json) => console.log(json));
+            if (props.method == "Get") {
+              fetch(props.apiUrl)
+                .then((res) => res.json())
+                .then((json) => console.log(json));
+            } else if (props.method == "Post") {
+              fetch(props.apiUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: props.body,
+              })
+                .then((res) => res.json())
+                .then((json) => console.log(json));
+            }
           }}
           sx={{
             width: 100,
