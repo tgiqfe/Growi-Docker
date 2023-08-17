@@ -40,7 +40,7 @@ app.MapGet("/api/script/{name}", async (context) =>
     await context.Response.WriteAsJsonAsync(res);
 }).RequireCors(_allowSpecificOrigins);
 
-//  API Export MongoDB
+//  API Export MongoDB (Get)
 app.MapGet("/api/mongodb/export", async (context) =>
 {
     string dbServer = context.Request.Query["server"].ToString();
@@ -53,6 +53,11 @@ app.MapGet("/api/mongodb/export", async (context) =>
     
     await context.Response.WriteAsJsonAsync(res);
 }).RequireCors(_allowSpecificOrigins);
+
+//  API Export MongoDB (Post)
+app.MapPost("/api/mongodb/export", async (context) =>{
+    
+});
 
 
 app.Run();
