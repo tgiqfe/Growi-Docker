@@ -49,7 +49,7 @@ app.MapGet("/api/mongodb/export", async (context) =>
     string dbName = context.Request.Query["name"].ToString();
 
     var mongodbExport = new MongoDBExport(gp, dbServer, dbPort, dbName);
-    mongodbExport.Start();
+    mongodbExport.Start("");
     var res = mongodbExport.GetResult();
 
     await context.Response.WriteAsJsonAsync(res);
@@ -59,7 +59,7 @@ app.MapPost("/api/mongodb/export", async (context) =>
 {
     var req = await context.Request.ReadFromJsonAsync<MongoDBRequest>();
     var mongodbExport = new MongoDBExport(gp, req.dbServer, req.dbPort, req.dbName);
-    mongodbExport.Start();
+    mongodbExport.Start(req.outputDir);
     var res = mongodbExport.GetResult();
     await context.Response.WriteAsJsonAsync(res);
 }).RequireCors(_allowSpecificOrigins);

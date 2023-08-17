@@ -1,6 +1,7 @@
 ﻿using CockpitApp.Api.MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Diagnostics;
 
 namespace CockpitApp.Api
 {
@@ -26,7 +27,7 @@ namespace CockpitApp.Api
             this.DBName = name;
         }
 
-        public void Start()
+        public void Start(string outputDir)
         {
             var pageList = new DocumentList<PageItem>(_db.GetCollection<BsonDocument>("pages"));
             var revisionList = new DocumentList<RevisionItem>(_db.GetCollection<BsonDocument>("revisions"));
@@ -57,14 +58,28 @@ namespace CockpitApp.Api
                 }
             });
 
-            string targetDir = "output";
-            if (!Directory.Exists(targetDir))
+            string tempOutput = "output";
+            if (!Directory.Exists(tempOutput))
             {
-                Directory.CreateDirectory(targetDir);
+                Directory.CreateDirectory(tempOutput);
             }
-            dedupulicated.Values.ToList().ForEach(x => x.Output(targetDir));
+            dedupulicated.Values.ToList().ForEach(x => x.Output(tempOutput));
+            
+            if (!Directory.Exists(outputDir))
+            {
+                Directory.CreateDirectory(outputDir);
+            }
+            string outputFile = Path.Combine(outputDir, "mongoExport_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".zip");
+            Zipper.Compress(tempOutput, outputFile);
 
-            Zipper.Compress(targetDir, "mongoExport_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".zip");
+            //  Upload minio (環境依存が強すぎる・・・)
+            using(var proc = new Process()){
+                proc.StartInfo.FileName = "mc";
+                proc.StartInfo.Arguments = $"cp {outputFile} qedit/growi-backup";
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.UseShellExecute = false;
+                proc.Start();
+            }
         }
 
         public ResponseItem GetResult()
