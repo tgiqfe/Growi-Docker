@@ -40,6 +40,11 @@ export default () => {
             text="Export revision from Growi."
             apiUrl="/api/mongodb/export?server=mongo&port=27017&name=growi"
           />
+          <ControlButton
+            name="Export2"
+            text="Export revision from Growi."
+            apiUrl="/api/mongodb/export?server=mongo&port=27017&name=growi"
+          />
         </Box>
       </Paper>
     </Container>
