@@ -116,10 +116,12 @@ services:
     container_name: growi-minio
     command: ["server", "/data/files", "--console-address", ":9001"]
     environment:
-    - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-    - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     volumes:
-    - minio:/data
+      - minio:/data
+    #ports:
+    #  - "9000:9000"
 
   nginx:
     image: nginx:20230814-05

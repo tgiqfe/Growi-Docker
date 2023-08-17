@@ -43,7 +43,7 @@
     </a>
 </div>
 
-### コンテンツ一覧
+### コンテンツlist
 
 <div class="border py-2 px-4 mx-4" style="max-width:32rem">
 
